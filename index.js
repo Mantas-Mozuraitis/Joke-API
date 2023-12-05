@@ -28,38 +28,38 @@ app.get("/filter", (req,res)=>{
 
 //POST new joke
 app.post("/jokes", (req,res)=>{
-    const {id, jokeText, jokeType} = req.body;
-    if (id&&jokeText&&jokeType){
-        const joke = {
-            id:id,
-            jokeText:jokeText,
-            jokeType:jokeType
-        }
-        jokes.push(joke);
-        res.status(201).json(joke);
-    }else{
-        res.status(400).json({ error: 'Invalid request. Please provide both setup and punchline in the request body.' });
+    const newJoke = {
+        id:jokes.length+1,
+        jokeText:req.body.text,
+        jokeType:req.body.type
     }
+    jokes.push(newJoke);
+    console.log(jokes.slice(-1));
+    res.json(newJoke);
 })
 
 // Replace a joke (PUT)
 app.put("/jokes/:id", (req,res)=>{
-    const {id, jokeText, jokeType} = req.body;
-    if (id&&jokeText&&jokeType) {
-        jokes.forEach((joke)=>{
-            if (joke.id === req.params.id) {
-                joke.id = id;
-                joke.jokeText = jokeText;
-                joke.jokeType = jokeType;
-            }
-            res.status(201).json(joke);
-        })
-    }else{
-        res.json({error:"Not all body data was provided with the request"});
-    }
+  const updatedJoke={
+    id:req.params.id,
+    jokeText:req.body.text,
+    jokeType:req.body.type
+  };
+    jokes.forEach((joke)=>{
+      if (joke.id == updatedJoke.id) {
+          joke.jokeText = updatedJoke.jokeText;
+          joke.jokeType = updatedJoke.jokeType;
+      }
+    })
+    res.json(updatedJoke);
 })
 
-
+// Replcae part of joke (PATCH)
+app.patch("/jokes/:id", (req,res)=>{
+  jokes[parseInt(req.params.id)-1].jokeText = req.body.text || jokes[parseInt(req.params.id)-1].jokeText;
+  jokes[parseInt(req.params.id)-1].jokeType = req.body.type || jokes[parseInt(req.params.id)-1].jokeType;
+  res.json(jokes[parseInt(req.params.id)-1]);
+})
 
 
 app.listen(port, (req,res)=>{
