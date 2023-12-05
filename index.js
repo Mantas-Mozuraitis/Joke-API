@@ -56,9 +56,10 @@ app.put("/jokes/:id", (req,res)=>{
 
 // Replcae part of joke (PATCH)
 app.patch("/jokes/:id", (req,res)=>{
-  jokes[parseInt(req.params.id)-1].jokeText = req.body.text || jokes[parseInt(req.params.id)-1].jokeText;
-  jokes[parseInt(req.params.id)-1].jokeType = req.body.type || jokes[parseInt(req.params.id)-1].jokeType;
-  res.json(jokes[parseInt(req.params.id)-1]);
+  jokeIndex = parseInt(req.params.id)-1;
+  jokes[jokeIndex].jokeText = req.body.text || jokes[jokeIndex].jokeText;
+  jokes[jokeIndex].jokeType = req.body.type || jokes[jokeIndex].jokeType;
+  res.json(jokes[jokeIndex]);
 })
 
 
