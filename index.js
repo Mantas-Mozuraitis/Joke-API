@@ -56,10 +56,35 @@ app.put("/jokes/:id", (req,res)=>{
 
 // Replcae part of joke (PATCH)
 app.patch("/jokes/:id", (req,res)=>{
-  jokeIndex = parseInt(req.params.id)-1;
+  const jokeIndex = parseInt(req.params.id)-1;
   jokes[jokeIndex].jokeText = req.body.text || jokes[jokeIndex].jokeText;
   jokes[jokeIndex].jokeType = req.body.type || jokes[jokeIndex].jokeType;
   res.json(jokes[jokeIndex]);
+})
+
+// DELETE one joke
+app.delete("/jokes/:id", (req,res)=>{
+  const jokeid = parseInt(req.params.id);
+  const jokeIndex = jokes.findIndex((joke) => joke.id === jokeid);
+  if (jokeIndex > -1) {
+    jokes.splice(jokeIndex,1);
+    res.sendStatus(200);
+  }else{
+      res
+        .status(404)
+        .json({error: `Joke with id:${jokeid} not found. No jokes were deleted`});
+  }
+})
+
+// DELETE all jokes
+app.delete("/all", (req,res)=>{
+  const userKey = req.query.key;
+  if (userKey === masterKey) {
+    jokes.length = 0;
+    res.sendStatus(200);
+  }else{
+      res.json({error:"User is not authorised to perform this action"})
+  }
 })
 
 
